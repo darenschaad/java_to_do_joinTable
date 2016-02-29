@@ -123,4 +123,13 @@ public class Task {
       return categories;
     }
   }
+
+  public void removeCategory(int categoryId) {
+    try(Connection con = DB.sql2o.open()){
+      String sql ="DELETE FROM categories_tasks WHERE category_id =  :categoryId AND task_id = :taskId";      con.createQuery(sql)
+        .addParameter("categoryId", categoryId)
+        .addParameter("taskId", this.getId())
+        .executeUpdate();
+    }
+  }
 }

@@ -121,5 +121,15 @@ public class App {
       model.put("template", "templates/addTask.vtl");
       return new ModelAndView(model, layout);
     }, new VelocityTemplateEngine());
+
+    post("/:categoryId/remove/:taskId", (request, response) -> {
+      HashMap<String, Object> model = new HashMap<String, Object>();
+      int categoryId = Integer.parseInt(request.params(":categoryId"));
+      Task task = Task.find(Integer.parseInt(request.params(":taskId")));
+      task.removeCategory(categoryId);
+      response.redirect("/" + categoryId);
+      return null;
+    });
   }
+
 }

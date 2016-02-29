@@ -12,7 +12,7 @@ task.vtl
 
 
 <form action="/tasks/$task.getId()/categoryadd" method="post">
-  <label>Assign a Category</label>
+  <label>Assign a Category to $task.getDescription()</label>
   <select name='categoryassign' type='text'>
   #foreach($category in $allcategories)
     <option value="$category.getId()" id ="$category.getId()">$category.getName()</option>
