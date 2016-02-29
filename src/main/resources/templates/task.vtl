@@ -1,0 +1,25 @@
+task.vtl
+
+<h2>$task.getDescription()</h2>
+
+<ul>
+
+
+#foreach($category in $categories)
+<li><a href="/category.getId()"><h4>$category.getName()</h4></a></li>
+#end
+</ul>
+
+
+<form action="/tasks/$task.getId()/categoryadd" method="post">
+  <label>Assign a Category</label>
+  <select name='categoryassign' type='text'>
+  #foreach($category in $allcategories)
+    <option value="$category.getId()" id ="$category.getId()">$category.getName()</option>
+  #end
+  </select>
+  <button type="submit" name="taskButton" class="btn btn-info">Submit</button>
+</form>
+
+<a href="/">Go Back Home</a>
+<a href="/tasks">View all Tasks</a>
