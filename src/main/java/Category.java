@@ -80,7 +80,7 @@ public class Category {
 
   public ArrayList<Task> getTasks() {
     try(Connection con = DB.sql2o.open()) {
-      String sql = "SELECT task_id FROM categories_tasks WHERE category_id = :category_id";
+      String sql = "SELECT task_id FROM categories_tasks  JOIN tasks ON (tasks.id = categories_tasks.task_id) WHERE category_id = :category_id ORDER BY description";
       List<Integer> taskIds = con.createQuery(sql)
         .addParameter("category_id", this.getId())
         .executeAndFetch(Integer.class);
@@ -88,7 +88,7 @@ public class Category {
       ArrayList<Task> tasks = new ArrayList<Task>();
 
       for (Integer taskId : taskIds) {
-        String taskQuery = "Select * FROM tasks WHERE id = :taskId";
+        String taskQuery = "Select * FROM tasks WHERE id = :taskId ORDER BY description";
         Task task = con.createQuery(taskQuery)
           .addParameter("taskId", taskId)
           .executeAndFetchFirst(Task.class);
