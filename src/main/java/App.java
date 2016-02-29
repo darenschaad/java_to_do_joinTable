@@ -38,6 +38,20 @@ public class App {
       return new ModelAndView(model, layout);
     }, new VelocityTemplateEngine());
 
+    post("/tasks/:id/categoryadd", (request, response) -> {
+      HashMap<String, Object> model = new HashMap<String, Object>();
+      int id = Integer.parseInt(request.params(":id"));
+      Task task = Task.find(id);
+      int category_id = Integer.parseInt(request.queryParams("categoryassign"));
+      Category assignedCategory = Category.find(category_id);
+      task.addCategory(assignedCategory);
+      model.put("task", task);
+      model.put("categories", task.getCategories());
+      model.put("allcategories", Category.all());
+      model.put("template", "templates/task.vtl");
+      return new ModelAndView(model, layout);
+    }, new VelocityTemplateEngine());
+
     post("/tasks", (request, response) -> {
       HashMap<String, Object> model = new HashMap<String, Object>();
       int id = Integer.parseInt(request.queryParams("taskId"));
