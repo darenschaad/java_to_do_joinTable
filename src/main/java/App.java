@@ -52,6 +52,15 @@ public class App {
       return new ModelAndView(model, layout);
     }, new VelocityTemplateEngine());
 
+    post("/tasks/:taskId/remove/:categoryId", (request, response) -> {
+      HashMap<String, Object> model = new HashMap<String, Object>();
+      int taskId = Integer.parseInt(request.params(":taskId"));
+      Category category = Category.find(Integer.parseInt(request.params(":categoryId")));
+      category.removeTask(taskId);
+      response.redirect("/tasks/" + taskId);
+      return null;
+    });
+
     post("/tasks", (request, response) -> {
       HashMap<String, Object> model = new HashMap<String, Object>();
       int id = Integer.parseInt(request.queryParams("taskId"));
