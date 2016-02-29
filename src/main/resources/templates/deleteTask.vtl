@@ -1,0 +1,6 @@
+<h2>Are you sure you want to delete $task.getDescription()?</h2>
+  <a href="/" class="btn btn-info">Do Not Delete</a>
+<form action="/tasks/$task.getId()/delete" method="post">
+  <button type="submit" id="delete$task.getId()" name="$task.getId()" class="btn btn-danger delete">
+  Delete Task</button>
+</form>

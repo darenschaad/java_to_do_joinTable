@@ -100,9 +100,23 @@ public class AppTest extends FluentTest {
     myTask.addCategory(myCategory);
     String categoryPath = String.format("http://localhost:4567/%d", myCategory.getId());
     goTo(categoryPath);
-    String buttonId = String.format("%d", myTask.getId());
+    String buttonId = String.format("remove%d", myTask.getId());
     submit(".remove", withId(buttonId));
     assertThat(pageSource()).doesNotContain("Mow the lawn");
   }
 
+  @Test public void deleteTask() {
+    Category myCategory = new Category("Household chores");
+    myCategory.save();
+    Task myTask = new Task("Mow the lawn");
+    myTask.save();
+    myTask.addCategory(myCategory);
+    String categoryPath = String.format("http://localhost:4567/%d", myCategory.getId());
+    goTo(categoryPath);
+    String buttonId = String.format("delete%d", myTask.getId());
+    click("a", withId(buttonId));
+    submit(".btn", withId(buttonId));
+    goTo(categoryPath);
+    assertThat(pageSource()).doesNotContain("Mow the lawn");
+  }
 }
