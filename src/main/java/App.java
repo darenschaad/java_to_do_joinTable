@@ -61,16 +61,6 @@ public class App {
       return null;
     });
 
-    post("/tasks", (request, response) -> {
-      HashMap<String, Object> model = new HashMap<String, Object>();
-      int id = Integer.parseInt(request.queryParams("taskId"));
-      Task taskToDelete = Task.find(id);
-      taskToDelete.delete();
-      model.put("tasks", Task.all());
-      model.put("template", "templates/tasks.vtl");
-      return new ModelAndView(model, layout);
-    }, new VelocityTemplateEngine());
-
     post("/", (request, response) -> {
       HashMap<String, Object> model = new HashMap<String, Object>();
       String categoryName = request.queryParams("categoryName");
@@ -129,6 +119,24 @@ public class App {
       int taskId = Integer.parseInt(request.params(":id"));
       Task task = Task.find(taskId);
       task.delete();
+      response.redirect("/");
+      return null;
+    });
+
+    get("/:id/delete", (request, response) -> {
+      HashMap<String, Object> model = new HashMap<String, Object>();
+      int categoryId = Integer.parseInt(request.params(":id"));
+      Category category = Category.find(categoryId);
+      model.put("category", category);
+      model.put("template", "templates/delete.vtl");
+      return new ModelAndView(model, layout);
+    }, new VelocityTemplateEngine());
+
+    post("/:id/delete", (request, response) -> {
+      HashMap<String, Object> model = new HashMap<String, Object>();
+      int categoryId = Integer.parseInt(request.params(":id"));
+      Category category = Category.find(categoryId);
+      category.deleteCategory();
       response.redirect("/");
       return null;
     });

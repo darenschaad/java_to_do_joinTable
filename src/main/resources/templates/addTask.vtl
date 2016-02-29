@@ -2,18 +2,16 @@ addTask.vtl
 
 <h2>$category.getName()</h2>
 
-<ul>
-
-
 #foreach($task in $tasks)
-<li><a href="/tasks/$task.getId()"><h4>$task.getDescription() #if ($task.getDueDate().length() >= 1)  Due Date: $task.getDueDate()#end</h4></a></li>
-<form action="/$category.getId()/remove/$task.getId()" method="post">
-  <button type="submit" id="remove$task.getId()" name="$task.getId()" class="btn btn-warning remove">
-  Remove Task</button>
-</form>
-<a href="/tasks/$task.getId()/delete" id = "delete$task.getId()" class="btn btn-danger delete">Delete Task</a>
+<h4>
+  <form action="/$category.getId()/remove/$task.getId()" method="post">
+    <label for=""><a href="/tasks/$task.getId()">$task.getDescription() #if ($task.getDueDate().length() >= 1)  Due Date: $task.getDueDate()#end</a></label>
+    <button type="submit" id="remove$task.getId()" name="$task.getId()" class="btn btn-warning remove">Remove Task</button>
+    <a href="/tasks/$task.getId()/delete" id = "delete$task.getId()" class="btn btn-danger delete">Delete Task</a>
+  </form>
+</h4>
+
 #end
-</ul>
 
 
 <form action="/:id" method="post">
