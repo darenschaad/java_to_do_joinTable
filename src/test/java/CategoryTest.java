@@ -35,18 +35,6 @@ public class CategoryTest {
     assertTrue(myCategory.equals(savedCategory));
   }
 
-  // @Test
-  //   public void getTasks_retrievesALlTasksFromDatabase_tasksList() {
-  //     Category myCategory = new Category("Household chores");
-  //     myCategory.save();
-  //     Task firstTask = new Task("Mow the lawn", myCategory.getId());
-  //     firstTask.save();
-  //     Task secondTask = new Task("Do the dishes", myCategory.getId());
-  //     secondTask.save();
-  //     Task[] tasks = new Task[] { firstTask, secondTask };
-  //     assertTrue(myCategory.getTasks().containsAll(Arrays.asList(tasks)));
-  // }
-
   @Test
   public void addTask_addsTaskToCategory() {
     Category myCategory = new Category("Household chores");
@@ -78,6 +66,17 @@ public class CategoryTest {
     myCategory.addTask(myTask);
     myCategory.deleteCategory();
     assertEquals(myTask.getCategories().size(), 0);
+  }
+
+  @Test
+  public void removeTask_deletesAllRelationsBetweenTaskAndCategory() {
+    Category myCategory = new Category("Household chores");
+    myCategory.save();
+    Task myTask = new Task("Mow the lawn");
+    myTask.save();
+    myCategory.addTask(myTask);
+    myCategory.removeTask(myTask.getId());
+    assertEquals(myCategory.getTasks().size(), 0);
   }
 
 }

@@ -39,19 +39,21 @@ public class AppTest extends FluentTest {
     assertThat(pageSource()).contains("Shopping");
   }
 
-  // @Test
-  // public void allTasksDisplayDescriptionOnCategoryPage() {
-  //   Category myCategory = new Category("Household chores");
-  //   myCategory.save();
-  //   Task firstTask = new Task("Mow the lawn");
-  //   firstTask.save();
-  //   Task secondTask = new Task("Do the dishes");
-  //   secondTask.save();
-  //   String categoryPath = String.format("http://localhost:4567/%d", myCategory.getId());
-  //   goTo(categoryPath);
-  //   assertThat(pageSource()).contains("Mow the lawn");
-  //   assertThat(pageSource()).contains("Do the dishes");
-  // }
+  @Test
+  public void allTasksDisplayDescriptionOnCategoryPage() {
+    Category myCategory = new Category("Household chores");
+    myCategory.save();
+    Task firstTask = new Task("Mow the lawn");
+    firstTask.save();
+    myCategory.addTask(firstTask);
+    Task secondTask = new Task("Do the dishes");
+    secondTask.save();
+    myCategory.addTask(secondTask);
+    String categoryPath = String.format("http://localhost:4567/%d", myCategory.getId());
+    goTo(categoryPath);
+    assertThat(pageSource()).contains("Mow the lawn");
+    assertThat(pageSource()).contains("Do the dishes");
+  }
 
   @Test
   public void categoryIsDeleted() {
@@ -60,7 +62,7 @@ public class AppTest extends FluentTest {
     int id = myCategory.getId();
     myCategory.deleteCategory();
     goTo("http://localhost:4567");
-    assertThat(!(pageSource()).contains("Household chores"));
+    assertThat(pageSource()).doesNotContain("Household chores");
   }
 
   @Test
@@ -74,7 +76,33 @@ public class AppTest extends FluentTest {
     myTask.delete();
     String categoryPath = String.format("http://localhost:4567/%d", myCategory.getId());
     goTo(categoryPath);
-    assertThat(!(pageSource()).contains("sweep"));
+    assertThat(pageSource()).doesNotContain("sweep");
+  }
+
+  @Test public void categoryIsRemoved() {
+    Category myCategory = new Category("Household chores");
+    myCategory.save();
+    Task myTask = new Task("Mow the lawn");
+    myTask.save();
+    myCategory.addTask(myTask);
+    String taskPath = String.format("http://localhost:4567/tasks/%d", myTask.getId());
+    goTo(taskPath);
+    String buttonId = String.format("%d", myCategory.getId());
+    submit(".remove", withId(buttonId));
+    assertThat(pageSource()).doesNotContain("<h4>Household chores</h4>");
+  }
+
+  @Test public void taskIsRemoved() {
+    Category myCategory = new Category("Household chores");
+    myCategory.save();
+    Task myTask = new Task("Mow the lawn");
+    myTask.save();
+    myTask.addCategory(myCategory);
+    String categoryPath = String.format("http://localhost:4567/%d", myCategory.getId());
+    goTo(categoryPath);
+    String buttonId = String.format("%d", myTask.getId());
+    submit(".remove", withId(buttonId));
+    assertThat(pageSource()).doesNotContain("Mow the lawn");
   }
 
 }

@@ -8,8 +8,8 @@ task.vtl
 #foreach($category in $categories)
 <li><a href="/$category.getId()"><h4>$category.getName()</h4></a></li>
 <form action="/tasks/$task.getId()/remove/$category.getId()" method="post">
-  <button type="submit" id="$category.getId()" name="$category.getId()" class="btn btn-warning">
-  Remove Category</button></h4>
+  <button type="submit" id="$category.getId()" name="$category.getId()" class="btn btn-warning remove">
+  Remove Category</button>
 </form>
 #end
 </ul>

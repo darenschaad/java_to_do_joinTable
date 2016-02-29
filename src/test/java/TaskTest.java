@@ -76,4 +76,15 @@ public class TaskTest {
     myTask.delete();
     assertEquals(myCategory.getTasks().size(), 0);
   }
+
+  @Test
+  public void removeCategory_deletesAllRelationsBetweenTaskAndCategory() {
+    Category myCategory = new Category("Household chores");
+    myCategory.save();
+    Task myTask = new Task("Mow the lawn");
+    myTask.save();
+    myTask.addCategory(myCategory);
+    myTask.removeCategory(myCategory.getId());
+    assertEquals(myTask.getCategories().size(), 0);
+  }
 }
