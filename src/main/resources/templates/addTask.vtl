@@ -18,6 +18,8 @@ addTask.vtl
   <input id="categoryId" name="categoryId" type=hidden value="$category.getId()">
   <label>Add a Task to $category.getName()</label>
   <input type="text" name="taskName" id="taskName" required autofocus="autofocus">
+  <label>Add a Due Date (optional):</label>
+  <input type="date" name="dueDate" id="dueDate">
   <button type="submit" name="taskButton" class="btn btn-info">Submit</button>
 </form>
 

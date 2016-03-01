@@ -1,4 +1,5 @@
 import java.util.HashMap;
+import java.util.Date;
 import java.util.List;
 import spark.ModelAndView;
 import spark.template.velocity.VelocityTemplateEngine;
@@ -76,8 +77,12 @@ public class App {
       HashMap<String, Object> model = new HashMap<String, Object>();
       Category category = Category.find(Integer.parseInt(request.queryParams("categoryId")));
       String taskName = request.queryParams("taskName");
+      String dueDate = request.queryParams("dueDate");
       Task newTask = new Task(taskName);
       newTask.save();
+      if (dueDate != "") {
+        newTask.addDue(dueDate);
+      }
       category.addTask(newTask);
       List<Task> tasks = category.getTasks();
       model.put("category", category);
@@ -110,7 +115,7 @@ public class App {
       int taskId = Integer.parseInt(request.params(":id"));
       Task task = Task.find(taskId);
       model.put("task", task);
-      model.put("template", "templates/deleteTask.vtl");
+      model.put("template", "templates/delete.vtl");
       return new ModelAndView(model, layout);
     }, new VelocityTemplateEngine());
 
@@ -140,6 +145,25 @@ public class App {
       response.redirect("/");
       return null;
     });
+
+    post("/tasks/:id/complete", (request, response) -> {
+      HashMap<String, Object> model = new HashMap<String, Object>();
+      int taskId = Integer.parseInt(request.params(":id"));
+      Task task = Task.find(taskId);
+      task.completeTask();
+      response.redirect("/tasks");
+      return null;
+    });
+
+    post("/tasks/:id/incomplete", (request, response) -> {
+      HashMap<String, Object> model = new HashMap<String, Object>();
+      int taskId = Integer.parseInt(request.params(":id"));
+      Task task = Task.find(taskId);
+      task.deCompleteTask();
+      response.redirect("/tasks");
+      return null;
+    });
+
   }
 
 }

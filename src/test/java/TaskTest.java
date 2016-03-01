@@ -87,4 +87,23 @@ public class TaskTest {
     myTask.removeCategory(myCategory.getId());
     assertEquals(myTask.getCategories().size(), 0);
   }
+
+  @Test
+  public void completeTask_marksATaskComplete() {
+    Task myTask = new Task("Mow the lawn");
+    myTask.save();
+    myTask.completeTask();
+    Task savedTask = Task.find(myTask.getId());
+    assertEquals(savedTask.getCompletionStatus(), true);
+  }
+
+  @Test
+  public void deCompleteTask_marksATaskIncomplete() {
+    Task myTask = new Task("Mow the lawn");
+    myTask.save();
+    myTask.completeTask();
+    myTask.deCompleteTask();
+    Task savedTask = Task.find(myTask.getId());
+    assertEquals(savedTask.getCompletionStatus(), false);
+  }
 }

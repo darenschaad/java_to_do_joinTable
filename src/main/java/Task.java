@@ -1,4 +1,5 @@
 import java.util.List;
+import java.util.Date;
 import java.util.ArrayList;
 import org.sql2o.*;
 
@@ -6,6 +7,8 @@ public class Task {
   private int id;
   private String description;
   private String dueDate;
+  private boolean complete;
+  private String due;
 
   public int getId() {
     return id;
@@ -15,13 +18,18 @@ public class Task {
     return description;
   }
 
+  public boolean getCompletionStatus() {
+    return complete;
+  }
 
-  public String getDueDate() {
-    return dueDate;
+  public String getDue() {
+    return due;
   }
 
   public Task(String description) {
     this.description = description;
+    this.complete = false;
+    this.due = "";
   }
 
   @Override
@@ -31,13 +39,15 @@ public class Task {
     } else {
       Task newTask = (Task) otherTask;
       return this.getDescription().equals(newTask.getDescription()) &&
-             this.getId() == newTask.getId();
+             this.getId() == newTask.getId() &&
+             this.getDue() == newTask.getDue() &&
+             this.getCompletionStatus() == newTask.getCompletionStatus();
     }
   }
 
 
   public static List<Task> all() {
-    String sql = "SELECT id, description FROM tasks";
+    String sql = "SELECT * FROM tasks ORDER BY complete, due, description";
     try(Connection con = DB.sql2o.open()) {
       return con.createQuery(sql).executeAndFetch(Task.class);
     }
@@ -45,9 +55,10 @@ public class Task {
 
   public void save() {
     try(Connection con = DB.sql2o.open()) {
-      String sql = "INSERT INTO tasks(description) VALUES (:description)";
+      String sql = "INSERT INTO tasks(description, complete) VALUES (:description, :complete)";
       this.id = (int) con.createQuery(sql, true)
         .addParameter("description", description)
+        .addParameter("complete", complete)
         .executeUpdate()
         .getKey();
     }
@@ -65,7 +76,7 @@ public class Task {
 
   public void update(String description) {
     try(Connection con = DB.sql2o.open()) {
-      String sql = "UPDATE tasks SET description = :description) WHERE id = :id";
+      String sql = "UPDATE tasks SET description = :description WHERE id = :id";
       con.createQuery(sql)
         .addParameter("description", description)
         .addParameter("id", id)
@@ -129,6 +140,34 @@ public class Task {
       String sql ="DELETE FROM categories_tasks WHERE category_id =  :categoryId AND task_id = :taskId";      con.createQuery(sql)
         .addParameter("categoryId", categoryId)
         .addParameter("taskId", this.getId())
+        .executeUpdate();
+    }
+  }
+
+  public void deCompleteTask() {
+  try(Connection con = DB.sql2o.open()){
+    String sql = "UPDATE tasks SET complete = false WHERE id = :id";
+    con.createQuery(sql)
+      .addParameter("id", id)
+      .executeUpdate();
+    }
+  }
+
+  public void completeTask() {
+    try(Connection con = DB.sql2o.open()){
+      String sql = "UPDATE tasks SET complete = true WHERE id = :id";
+      con.createQuery(sql)
+        .addParameter("id", id)
+        .executeUpdate();
+    }
+  }
+
+  public void addDue(String dueDate) {
+    try(Connection con = DB.sql2o.open()){
+      String sql = "UPDATE tasks SET due = :dueDate WHERE id = :id";
+      con.createQuery(sql)
+        .addParameter("id", id)
+        .addParameter("dueDate", dueDate)
         .executeUpdate();
     }
   }
